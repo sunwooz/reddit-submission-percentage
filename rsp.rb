@@ -27,5 +27,5 @@ my_links_size = my_links.size
 
 percentage = (my_links_size.to_f / submitted_size.to_f) * 100.0
 
-puts "#{percentage}% of your submissions link to your own content"
+puts "#{percentage}% of your submissions link to your own content (#{my_links_size}/#{submitted_size})"
 
