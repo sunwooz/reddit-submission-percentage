@@ -1,31 +1,35 @@
 require 'redd'
 
-client_id = 'reddit-client-id'
+#CHANGE THESE FIELDS
+client_id = '****'
+client_secret = '****'
+username = '****'
+password = '****'
+your_sites = ['remotecorgi.com', 'sunwoo.io', 'sunwooyang.com', 'vrmachine.io']
+#CHANGE THESE FIELDS
 
-client_secret = 'reddit-client-secret'
+#DONT TOUCH ANYTHING BEYOND THIS
+session = Redd.it(
+    user_agent: 'Tesasdgaot v1.0.0"',
+    client_id:  client_id,
+    secret:     client_secret,
+    username:   username,
+    password:   password
+)
+submissions = session.me.listing(:submitted, { limit: 100000 })
 
-username = 'reddit-username'
-password = 'reddit-password'
-your_sites = ['yourwebsite.io', 'yourwebsite.com']
+submitted_size = submissions.to_a.size
 
-r = Redd.it(:script, client_id, client_secret, username, password, user_agent: "Tesasdgaot v1.0.0")
-r.authorize!
-
-submissions = r.me.get_submitted
-
-only_links = submissions.select do |submission|
-  !submission[:domain].include?('self')
+my_links = submissions.collect do |submission|
+    return_item = nil
+    if your_sites.include?(submission.domain)
+        return_item = submission
+    end
+    return_item
 end
 
-submitted_size = only_links.size
-
-my_links = only_links.select do |link|
-  your_sites.include?(link[:domain])
-end
-
-my_links_size = my_links.size
+my_links_size = my_links.compact.size
 
 percentage = (my_links_size.to_f / submitted_size.to_f) * 100.0
 
 puts "#{percentage}% of your submissions link to your own content (#{my_links_size}/#{submitted_size})"
-
